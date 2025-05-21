@@ -4,14 +4,22 @@ from pathlib import Path
 
 print ('\n\tBOT\n')
 
-#Декоратор для обробки помилки ValueError
+#Декоратор для обробки помилки ValueError у функціях add_contact, change_contact
 def input_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except ValueError:
             return "Give me name and phone please."
+    return inner
 
+#Декоратор для обробки помилки FileNotFoundError в функції get_random_phrase
+def FileNotFoundError_error(func):
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except FileNotFoundError:
+            return "How can I help you?"
     return inner
 
 #Функція розбору введеного користувачем рядку на команду та її аргументи. 
@@ -28,10 +36,14 @@ def add_contact(args:list[str], contacts:dict) -> str:
     return "Contact added."
 
 #Функція зміни контакту  Команда: "change John 0987654321"
+@input_error
 def change_contact(args:list[str], contacts:dict) -> str:
     name, phone = args
-    contacts[name.lower().capitalize()] = phone
-    return 'Contact updated.'
+    if name.lower().capitalize() not in contacts.keys():
+        return 'Contact is missing, please add it (add <name> <phone_namer>)! '
+    else: 
+        contacts[name.lower().capitalize()] = phone
+        return 'Contact updated.'
 
 #Функція показати контакти Команда: "phone John"
 def show_phone(args:list[str], contacts:dict) -> str:
@@ -40,20 +52,21 @@ def show_phone(args:list[str], contacts:dict) -> str:
 
 #Функція виведення всієї адресної книги Команда: "all"
 def show_all(contacts:dict):
-   for key, value in contacts.items():
-    print(f"{key} => {value}")
+    for key, value in contacts.items():
+        print(f"{key} : {value}")
 
 
 current_dir = Path(__file__).parent
 
 #функція для вибору рандомної фрази для відповіді на hello
+@FileNotFoundError_error
 def get_random_phrase():
-    try:
+    # try:
         with open(current_dir / "hello.txt", "r", encoding="utf-8") as file:
             phrase = file.readlines()
             return choice(phrase).strip()
-    except FileNotFoundError:
-        return "How can I help you?"
+    # except FileNotFoundError:
+        # return "How can I help you?"
 
 
 def main():
