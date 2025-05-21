@@ -1,9 +1,18 @@
 from random import choice
 from pathlib import Path
 
-#->->->->->->->->->->***FOURTH TASK***<-<-<-<-<-<-<-<-<-<
 
-print ('\n\tFOURTH TASK\n')
+print ('\n\tBOT\n')
+
+#Декоратор для обробки помилки ValueError
+def input_error(func):
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ValueError:
+            return "Give me name and phone please."
+
+    return inner
 
 #Функція розбору введеного користувачем рядку на команду та її аргументи. 
 def parse_input(user_input:str) -> tuple[str,*tuple[str,...]]:
@@ -12,6 +21,7 @@ def parse_input(user_input:str) -> tuple[str,*tuple[str,...]]:
     return cmd, *args
 
 #Функція отриманн контакту Команда: "add John 1234567890"
+@input_error
 def add_contact(args:list[str], contacts:dict) -> str:
     name, phone = args
     contacts[name.lower().capitalize()] = phone
