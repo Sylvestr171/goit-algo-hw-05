@@ -55,18 +55,13 @@ def show_all(contacts:dict):
     for key, value in contacts.items():
         print(f"{key} : {value}")
 
-
-current_dir = Path(__file__).parent
-
 #функція для вибору рандомної фрази для відповіді на hello
 @FileNotFoundError_error
 def get_random_phrase():
-    # try:
+        current_dir = Path(__file__).parent
         with open(current_dir / "hello.txt", "r", encoding="utf-8") as file:
             phrase = file.readlines()
             return choice(phrase).strip()
-    # except FileNotFoundError:
-        # return "How can I help you?"
 
 
 def main():
