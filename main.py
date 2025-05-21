@@ -6,25 +6,25 @@ from pathlib import Path
 print ('\n\tFOURTH TASK\n')
 
 #Функція розбору введеного користувачем рядку на команду та її аргументи. 
-def parse_input(user_input:str) -> str:
+def parse_input(user_input:str) -> tuple[str,*tuple[str,...]]:
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
 
 #Функція отриманн контакту Команда: "add John 1234567890"
-def add_contact(args:str, contacts:dict):
+def add_contact(args:list[str], contacts:dict) -> str:
     name, phone = args
     contacts[name.lower().capitalize()] = phone
     return "Contact added."
 
 #Функція зміни контакту  Команда: "change John 0987654321"
-def change_contact(args:str, contacts:dict) -> str:
+def change_contact(args:list[str], contacts:dict) -> str:
     name, phone = args
     contacts[name.lower().capitalize()] = phone
     return 'Contact updated.'
 
 #Функція показати контакти Команда: "phone John"
-def show_phone(args:str, contacts:dict) -> str:
+def show_phone(args:list[str], contacts:dict) -> str:
     name = args[0].lower().capitalize()
     return contacts.get(name, 'The name is missing')
 
@@ -52,7 +52,6 @@ def main():
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
-
         match command:
             case "close" | "exit":
                 print("Good bye!")
