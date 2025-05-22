@@ -9,7 +9,11 @@ def FileNotFoundError_error(func):
         try:
             return func(*args, **kwargs)
         except FileNotFoundError:
-            return "'FileNotFoundError' Please input correct path"
+            print("'FileNotFoundError' Please input correct path")
+            exit()
+        except ValueError:
+            print("Incorrect Log format")
+            exit()
     return inner
 
 #функція завантаження логу з файлу
@@ -27,7 +31,6 @@ def parse_log_line(line: str) -> dict[str, date | time | str]:
     log_time=time.fromisoformat(line.split()[1])
     log_level=line.split()[2]
     log_message=' '.join(line.split()[3:])
-    # log_dict={'date':log_date, 'time':log_time, 'level': log_level, 'message':log_message}
     return {
         'date':log_date, 
         'time':log_time, 
@@ -37,7 +40,7 @@ def parse_log_line(line: str) -> dict[str, date | time | str]:
 
 #функція фільтрації логів за рівнем
 def filter_logs_by_level(logs: list, level: str) -> list:
-    return list(filter(lambda x: x['level'] == level, logs))
+    return list(filter(lambda x: x['level'] == level, logs)) #filter + lambda-функція
 
 
 #функція підрахунку кількості повідомлень за рівнем логування
@@ -56,19 +59,6 @@ def display_log_counts(counts: dict):
          print (ithem, counts.get(ithem), sep='\t\t\t|\t') 
 
 
-
-# log_dict_list = load_logs('log.txt')
-# for i in log_dict_list:
-#     print (i)
-
-# filter_mesage=filter_logs_by_level(log_dict_list, 'INFO')
-# # for k in filter_mesage:
-# #     print (type(k))
-#print(count_logs_by_level(log_dict_list))
-# display_log_counts(count_logs_by_level(log_dict_list))
-
-
-
 if __name__ == '__main__':
 
     if len(argv) == 2:
@@ -82,22 +72,15 @@ if __name__ == '__main__':
         count_dict=count_logs_by_level(log_dict_list)
         display_log_counts(count_dict)
         if level_param in count_dict.keys():
-            filter_mesage=filter_logs_by_level(log_dict_list, level_param)
+            filter_message=filter_logs_by_level(log_dict_list, level_param)
+            sorted_filter_message=sorted(filter_message, key=lambda ithem: (ithem['date'], ithem['time']), reverse=True) #sorted + lambda function
             print (f'\nДеталі логів для рівня "{level_param}":')
-            for ithem in filter_mesage:
-                print (ithem['date'].isoformat(), ithem['time'].isoformat(), '-', ithem['info'], sep=' ')
+            [print (ithem['date'].isoformat(), ithem['time'].isoformat(), '-', ithem['info'], sep=' ') for ithem in sorted_filter_message] #list comprehention
         else:
-            print (f'Incorrect level parameter {level_param}')
+            print (f'\nIncorrect level parameter {level_param}\nPlease enter one from level logs')
     elif len(argv) == 1:
         print('Please insert path to file')
         exit()
     else:
         print('More parameters than expected')
         exit()
-    
-    # log_dict_list = load_logs(file_path)
-    # filter_mesage=filter_logs_by_level(log_dict_list, level_param)
-    # # for k in filter_mesage:
-    # #     print (type(k))
-    # print(count_logs_by_level(log_dict_list))
-    # display_log_counts(count_logs_by_level(log_dict_list))

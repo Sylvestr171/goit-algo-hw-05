@@ -1,0 +1,4 @@
+INFO 2024-01-22 08:30:01 INFO User logged in successfully.
+DEBUG 2024-01-22 08:45:23 DEBUG Attempting to connect to the database.
+ERROR 2024-01-22 09:00:45 ERROR Database connection failed.
+INFO 2024-01-22 09:15:10 INFO Data export completed.
