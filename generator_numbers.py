@@ -5,7 +5,7 @@ def generator_numbers(text: str) -> Generator[float]:
     '''
     Аналізує текст, ідентифікує всі дійсні числа, що вважаються частинами доходів, і повертати їх як генератор
     '''
-    filter_num = re.finditer(r'\d+\.*\d*', text)
+    filter_num = re.finditer(r'\s\d+\.*\d*\s', text)
     for match in filter_num:
         yield float(match.group())
 

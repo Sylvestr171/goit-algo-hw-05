@@ -4,20 +4,13 @@ from pathlib import Path
 
 print ('\n\tBOT\n')
 
-#Декоратор для обробки помилки ValueError у функціях add_contact, change_contact
-def input_error(func):
+#Декоратор для обробки помилки ValueError, FileNotFoundError у функціях add_contact, change_contact
+def error_operator(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except ValueError:
             return "Give me name and phone please."
-    return inner
-
-#Декоратор для обробки помилки FileNotFoundError в функції get_random_phrase
-def FileNotFoundError_error(func):
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
         except FileNotFoundError:
             return "How can I help you?"
     return inner
@@ -29,14 +22,14 @@ def parse_input(user_input:str) -> tuple[str,*tuple[str,...]]:
     return cmd, *args
 
 #Функція отриманн контакту Команда: "add John 1234567890"
-@input_error
+@error_operator
 def add_contact(args:list[str], contacts:dict) -> str:
     name, phone = args
     contacts[name.lower().capitalize()] = phone
     return "Contact added."
 
 #Функція зміни контакту  Команда: "change John 0987654321"
-@input_error
+@error_operator
 def change_contact(args:list[str], contacts:dict) -> str:
     name, phone = args
     if name.lower().capitalize() not in contacts.keys():
@@ -51,12 +44,11 @@ def show_phone(args:list[str], contacts:dict) -> str:
     return contacts.get(name, 'The name is missing')
 
 #Функція виведення всієї адресної книги Команда: "all"
-def show_all(contacts:dict):
-    for key, value in contacts.items():
-        print(f"{key} : {value}")
+def show_all(contacts: dict) -> str:
+    return '\n'.join(f"{key} => {value}" for key, value in contacts.items())
 
 #функція для вибору рандомної фрази для відповіді на hello
-@FileNotFoundError_error
+@error_operator
 def get_random_phrase():
         current_dir = Path(__file__).parent
         with open(current_dir / "hello.txt", "r", encoding="utf-8") as file:
@@ -83,7 +75,7 @@ def main():
             case "phone":
                 print(show_phone(args, contacts))
             case "all":
-                show_all(contacts)
+                print(show_all(contacts))
             case "help" | "?":
                 print("""The bot helps to work with the contact book.
                         Commands and functions:
