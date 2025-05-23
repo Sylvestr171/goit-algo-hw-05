@@ -16,6 +16,7 @@ def error_operator(func):
     return inner
 
 #Функція розбору введеного користувачем рядку на команду та її аргументи. 
+@error_operator
 def parse_input(user_input:str) -> tuple[str,*tuple[str,...]]:
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
